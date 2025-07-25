@@ -1,10 +1,14 @@
 package dao;
 
-import model.Attendance;
-import util.DBConnection;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import model.Attendance;
+import util.DBConnection;
 
 public class AttendanceDAO {
     public void markAttendance(Attendance att) {
