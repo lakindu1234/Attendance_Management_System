@@ -1,18 +1,19 @@
-import model.User;
-import model.Attendance;
-import service.AuthService;
-import dao.AttendanceDAO;
-
 import java.sql.Date;
 import java.util.List;
 import java.util.Scanner;
+
+import dao.AttendanceDAO;
+import model.Attendance;
+import model.User;
+import service.AuthService;
 
 public class Main {
     public static void main(String[] args) {
         AuthService authService = new AuthService();
         User user = authService.login();
 
-        if (user == null) return;
+        if (user == null)
+            return;
 
         Scanner scanner = new Scanner(System.in);
         AttendanceDAO attendanceDAO = new AttendanceDAO();
