@@ -1,30 +1,37 @@
+import java.io.*;
 import java.util.Scanner;
 
 public class Student {
-    public void dashboard() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("\n--- Student Dashboard ---");
-        while (true) {
-            System.out.println("\n1. View Attendance");
-            System.out.println("2. View Profile");
-            System.out.println("3. Logout");
-            System.out.print("Enter your choice: ");
+    private Scanner scanner;
 
-            int choice = scanner.nextInt();
+    public Student(Scanner scanner) {
+        this.scanner = scanner;
+    }
 
-            switch (choice) {
-                case 1:
-                    System.out.println("Showing attendance...");
-                    break;
-                case 2:
-                    System.out.println("Showing profile...");
-                    break;
-                case 3:
-                    System.out.println("Logging out...");
-                    return;
-                default:
-                    System.out.println("Invalid choice. Try again.");
-            }
+    public void login() {
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+
+        if (isStudentExists(username)) {
+            System.out.println("Login successful!");
+            System.out.println("Welcome, " + username + "!");
+            // Add dashboard logic here if needed
+        } else {
+            System.out.println("Login failed. Student not found.");
         }
+    }
+
+    private boolean isStudentExists(String username) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("students.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().equalsIgnoreCase(username)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading students.txt file.");
+        }
+        return false;
     }
 }
