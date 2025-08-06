@@ -1,3 +1,4 @@
+// File: Admin.java
 import java.io.*;
 import java.util.Scanner;
 
@@ -11,17 +12,29 @@ public class Admin {
     }
 
     public void login() {
-        System.out.print("Enter Admin Username: ");
-        String username = scanner.nextLine();
+        while (true) {
+            System.out.println("\n--- Admin Login ---");
+            System.out.print("Enter Admin Username (or 'back' to return to main menu): ");
+            String username = scanner.nextLine().trim();
 
-        System.out.print("Enter Admin Password: ");
-        String password = scanner.nextLine();
+            if (username.equalsIgnoreCase("back")) {
+                return;
+            }
 
-        if (authenticate(username, password)) {
-            System.out.println("✅ Admin login successful!");
-            dashboard();
-        } else {
-            System.out.println("❌ Invalid admin credentials!");
+            System.out.print("Enter Admin Password (or 'back' to return): ");
+            String password = scanner.nextLine().trim();
+
+            if (password.equalsIgnoreCase("back")) {
+                continue;
+            }
+
+            if (authenticate(username, password)) {
+                System.out.println("✅ Admin login successful!");
+                dashboard();
+                break;
+            } else {
+                System.out.println("❌ Invalid admin credentials! Try again or type 'back' to return.");
+            }
         }
     }
 
@@ -31,57 +44,147 @@ public class Admin {
 
     public void dashboard() {
         while (true) {
-            System.out.println("\n--- Admin Dashboard ---");
+            System.out.println("\n========================================");
+            System.out.println("         ADMIN DASHBOARD");
+            System.out.println("========================================");
             System.out.println("1. Add Teacher");
             System.out.println("2. Add Student");
             System.out.println("3. Delete Student");
-            System.out.println("4. View Attendance Report (coming soon)");
-            System.out.println("5. Logout");
+            System.out.println("4. View All Teachers");
+            System.out.println("5. View All Students");
+            System.out.println("6. View Attendance Report (coming soon)");
+            System.out.println("7. Back to Main Menu");
+            System.out.println("8. Exit Program");
+            System.out.println("========================================");
             System.out.print("Enter your choice: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // consume newline
 
-            switch (choice) {
-                case 1:
-                    addTeacher();
-                    break;
-                case 2:
-                    StudentManager.addStudent(scanner);
-                    break;
-                case 3:
-                    StudentManager.deleteStudent(scanner);
-                    break;
-                case 4:
-                    System.out.println("Feature coming soon...");
-                    break;
-                case 5:
-                    System.out.println("Logging out...");
-                    return;
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                switch (choice) {
+                    case 1:
+                        addTeacher();
+                        break;
+                    case 2:
+                        StudentManager.addStudent(scanner);
+                        break;
+                    case 3:
+                        StudentManager.deleteStudent(scanner);
+                        break;
+                    case 4:
+                        viewAllTeachers();
+                        break;
+                    case 5:
+                        StudentManager.viewAllStudents();
+                        break;
+                    case 6:
+                        System.out.println("📊 Feature coming soon...");
+                        pressEnterToContinue();
+                        break;
+                    case 7:
+                        System.out.println("🔙 Returning to Main Menu...");
+                        return;
+                    case 8:
+                        System.out.println("Thank you for using Attendance Management System!");
+                        System.out.println("Goodbye! 👋");
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("❌ Invalid choice. Please try again.");
+                        pressEnterToContinue();
+                }
+            } catch (Exception e) {
+                System.out.println("❌ Invalid input! Please enter a number.");
+                scanner.nextLine(); // Clear invalid input
+                pressEnterToContinue();
             }
         }
     }
 
     private void addTeacher() {
-        try {
-            System.out.print("Enter Teacher Name: ");
-            String name = scanner.nextLine();
+        while (true) {
+            System.out.println("\n--- Add New Teacher ---");
+            try {
+                System.out.print("Enter Teacher Name (or 'back' to return): ");
+                String name = scanner.nextLine().trim();
 
-            System.out.print("Enter Username: ");
-            String username = scanner.nextLine();
+                if (name.equalsIgnoreCase("back")) {
+                    return;
+                }
 
-            System.out.print("Enter Password: ");
-            String password = scanner.nextLine();
+                if (name.isEmpty()) {
+                    System.out.println("❌ Name cannot be empty!");
+                    continue;
+                }
 
-            FileWriter writer = new FileWriter("teachers.txt", true); // Append mode
-            writer.write(name + "," + username + "," + password + "\n");
-            writer.close();
+                System.out.print("Enter Username (or 'back' to return): ");
+                String username = scanner.nextLine().trim();
 
-            System.out.println("✅ Teacher added successfully!");
-        } catch (IOException e) {
-            System.out.println("❌ Error while saving teacher: " + e.getMessage());
+                if (username.equalsIgnoreCase("back")) {
+                    return;
+                }
+
+                if (username.isEmpty()) {
+                    System.out.println("❌ Username cannot be empty!");
+                    continue;
+                }
+
+                System.out.print("Enter Password (or 'back' to return): ");
+                String password = scanner.nextLine().trim();
+
+                if (password.equalsIgnoreCase("back")) {
+                    return;
+                }
+
+                if (password.isEmpty()) {
+                    System.out.println("❌ Password cannot be empty!");
+                    continue;
+                }
+
+                FileWriter writer = new FileWriter("teachers.txt", true);
+                writer.write(name + "," + username + "," + password + "\n");
+                writer.close();
+
+                System.out.println("✅ Teacher added successfully!");
+                System.out.print("Do you want to add another teacher? (y/n): ");
+                String choice = scanner.nextLine().trim();
+                if (!choice.equalsIgnoreCase("y")) {
+                    break;
+                }
+            } catch (IOException e) {
+                System.out.println("❌ Error while saving teacher: " + e.getMessage());
+                pressEnterToContinue();
+                break;
+            }
         }
+    }
+
+    private void viewAllTeachers() {
+        System.out.println("\n--- All Teachers ---");
+        try (BufferedReader reader = new BufferedReader(new FileReader("teachers.txt"))) {
+            String line;
+            int count = 0;
+            System.out.println("📋 Teachers List:");
+            System.out.println("----------------------------------------");
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    count++;
+                    System.out.println(count + ". Name: " + parts[0] + " | Username: " + parts[1]);
+                }
+            }
+            if (count == 0) {
+                System.out.println("No teachers found.");
+            }
+        } catch (IOException e) {
+            System.out.println("❌ Error reading teachers file: " + e.getMessage());
+        }
+        pressEnterToContinue();
+    }
+
+    private void pressEnterToContinue() {
+        System.out.print("Press Enter to continue...");
+        scanner.nextLine();
     }
 }

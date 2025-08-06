@@ -12,20 +12,32 @@ public class Teacher {
     }
 
     public void login() {
-        System.out.print("Enter Teacher Username: ");
-        String username = scanner.nextLine();
+        while (true) {
+            System.out.println("\n--- Teacher Login ---");
+            System.out.print("Enter Teacher Username (or 'back' to return to main menu): ");
+            String username = scanner.nextLine().trim();
 
-        System.out.print("Enter Teacher Password: ");
-        String password = scanner.nextLine();
+            if (username.equalsIgnoreCase("back")) {
+                return;
+            }
 
-        if (authenticate(username, password)) {
-            dashboard();
-        } else {
-            System.out.println("❌ Invalid teacher credentials!");
+            System.out.print("Enter Teacher Password (or 'back' to return): ");
+            String password = scanner.nextLine().trim();
+
+            if (password.equalsIgnoreCase("back")) {
+                continue;
+            }
+
+            if (authenticate(username, password)) {
+                dashboard();
+                break;
+            } else {
+                System.out.println("❌ Invalid teacher credentials! Try again or type 'back' to return.");
+            }
         }
     }
 
-    public static boolean authenticate(String username, String password) {
+    public boolean authenticate(String username, String password) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("teachers.txt"));
             String line;
@@ -53,36 +65,64 @@ public class Teacher {
 
     public void dashboard() {
         while (true) {
-            System.out.println("\n--- Teacher Dashboard ---");
+            System.out.println("\n========================================");
+            System.out.println("         TEACHER DASHBOARD");
+            System.out.println("========================================");
             System.out.println("1. Mark Attendance (coming soon)");
-            System.out.println("2. View Students (coming soon)");
+            System.out.println("2. View Students");
             System.out.println("3. Add Student");
             System.out.println("4. Delete Student");
-            System.out.println("5. Logout");
+            System.out.println("5. View Attendance Reports (coming soon)");
+            System.out.println("6. Back to Main Menu");
+            System.out.println("7. Exit Program");
+            System.out.println("========================================");
             System.out.print("Enter your choice: ");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            try {
+                int choice = scanner.nextInt();
+                scanner.nextLine();
 
-            switch (choice) {
-                case 1:
-                    System.out.println("Feature coming soon...");
-                    break;
-                case 2:
-                    System.out.println("Feature coming soon...");
-                    break;
-                case 3:
-                    StudentManager.addStudent(scanner);
-                    break;
-                case 4:
-                    StudentManager.deleteStudent(scanner);
-                    break;
-                case 5:
-                    System.out.println("Logging out...");
-                    return;
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                switch (choice) {
+                    case 1:
+                        System.out.println("📝 Feature coming soon...");
+                        pressEnterToContinue();
+                        break;
+                    case 2:
+                        StudentManager.viewAllStudents();
+                        pressEnterToContinue();
+                        break;
+                    case 3:
+                        StudentManager.addStudent(scanner);
+                        break;
+                    case 4:
+                        StudentManager.deleteStudent(scanner);
+                        break;
+                    case 5:
+                        System.out.println("📊 Feature coming soon...");
+                        pressEnterToContinue();
+                        break;
+                    case 6:
+                        System.out.println("🔙 Returning to Main Menu...");
+                        return;
+                    case 7:
+                        System.out.println("Thank you for using Attendance Management System!");
+                        System.out.println("Goodbye! 👋");
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("❌ Invalid choice. Please try again.");
+                        pressEnterToContinue();
+                }
+            } catch (Exception e) {
+                System.out.println("❌ Invalid input! Please enter a number.");
+                scanner.nextLine();
+                pressEnterToContinue();
             }
         }
+    }
+
+    private void pressEnterToContinue() {
+        System.out.print("Press Enter to continue...");
+        scanner.nextLine();
     }
 }
