@@ -32,27 +32,32 @@ public class Teacher {
 
     public void dashboard() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("\n--- Teacher Dashboard ---");
         while (true) {
-            System.out.println("\n1. Mark Attendance");
-            System.out.println("2. View Students");
-            System.out.println("3. View Attendance Report");
-            System.out.println("4. Logout");
+            System.out.println("\n--- Teacher Dashboard ---");
+            System.out.println("1. Mark Attendance (coming soon)");
+            System.out.println("2. View Students (coming soon)");
+            System.out.println("3. Add Student");
+            System.out.println("4. Delete Student");
+            System.out.println("5. Logout");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
-                    System.out.println("Marking attendance...");
+                    System.out.println("Feature coming soon...");
                     break;
                 case 2:
-                    System.out.println("Viewing students...");
+                    System.out.println("Feature coming soon...");
                     break;
                 case 3:
-                    System.out.println("Viewing attendance report...");
+                    StudentManager.addStudent();
                     break;
                 case 4:
+                    StudentManager.deleteStudent();
+                    break;
+                case 5:
                     System.out.println("Logging out...");
                     return;
                 default:
@@ -60,4 +65,8 @@ public class Teacher {
             }
         }
     }
+
+
+
+
 }
