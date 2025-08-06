@@ -1,9 +1,30 @@
+// File: Teacher.java
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class Teacher {
+    private Scanner scanner;
+
+    public Teacher(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public void login() {
+        System.out.print("Enter Teacher Username: ");
+        String username = scanner.nextLine();
+
+        System.out.print("Enter Teacher Password: ");
+        String password = scanner.nextLine();
+
+        if (authenticate(username, password)) {
+            dashboard();
+        } else {
+            System.out.println("❌ Invalid teacher credentials!");
+        }
+    }
+
     public static boolean authenticate(String username, String password) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("teachers.txt"));
@@ -31,7 +52,6 @@ public class Teacher {
     }
 
     public void dashboard() {
-        Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("\n--- Teacher Dashboard ---");
             System.out.println("1. Mark Attendance (coming soon)");
@@ -52,10 +72,10 @@ public class Teacher {
                     System.out.println("Feature coming soon...");
                     break;
                 case 3:
-                    StudentManager.addStudent();
+                    StudentManager.addStudent(scanner);
                     break;
                 case 4:
-                    StudentManager.deleteStudent();
+                    StudentManager.deleteStudent(scanner);
                     break;
                 case 5:
                     System.out.println("Logging out...");
@@ -65,8 +85,4 @@ public class Teacher {
             }
         }
     }
-
-
-
-
 }

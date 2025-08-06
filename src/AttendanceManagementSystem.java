@@ -24,8 +24,8 @@ public class AttendanceManagementSystem {
                 teacher.login();
                 break;
             case 3:
-                Student student = new Student(scanner);  // Pass scanner here
-                student.login();  // Call login
+                Student student = new Student(scanner);
+                student.login();
                 break;
             default:
                 System.out.println("Invalid choice.");

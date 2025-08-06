@@ -1,11 +1,10 @@
+// File: StudentManager.java
 import java.io.*;
 import java.util.*;
 
 public class StudentManager {
 
-    static Scanner scanner = new Scanner(System.in);
-
-    public static void addStudent() {
+    public static void addStudent(Scanner scanner) {
         try {
             System.out.print("Enter Student Name: ");
             String name = scanner.nextLine();
@@ -26,7 +25,7 @@ public class StudentManager {
         }
     }
 
-    public static void deleteStudent() {
+    public static void deleteStudent(Scanner scanner) {
         System.out.print("Enter the username of the student to delete: ");
         String targetUsername = scanner.nextLine();
 
@@ -36,8 +35,8 @@ public class StudentManager {
         boolean found = false;
 
         try (
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-            FileWriter writer = new FileWriter(tempFile)
+                BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+                FileWriter writer = new FileWriter(tempFile)
         ) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -52,9 +51,12 @@ public class StudentManager {
                 }
             }
 
-            writer.close();
-            reader.close();
+        } catch (IOException e) {
+            System.out.println("❌ Error processing file: " + e.getMessage());
+            return;
+        }
 
+        try {
             if (inputFile.delete() && tempFile.renameTo(inputFile)) {
                 if (found) {
                     System.out.println("✅ Student deleted successfully.");
@@ -64,8 +66,8 @@ public class StudentManager {
             } else {
                 System.out.println("❌ Error updating student records.");
             }
-        } catch (IOException e) {
-            System.out.println("❌ Error processing file: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("❌ Error updating student records: " + e.getMessage());
         }
     }
 }
