@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Teacher {
-
     public static boolean authenticate(String username, String password) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("teachers.txt"));
