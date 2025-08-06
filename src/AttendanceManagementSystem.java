@@ -32,25 +32,27 @@ public class AttendanceManagementSystem {
         System.out.println("\n--- " + role + " Login ---");
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
+
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
         System.out.println("\nLogin details:");
         System.out.println("Role    : " + role);
         System.out.println("Username: " + username);
-        System.out.println("Password: " + password);
-        System.out.println("\nRedirecting to " + role + " Dashboard...");
 
-        // Call role-specific dashboard
         switch (role) {
             case "Admin":
                 new Admin().dashboard();
                 break;
             case "Teacher":
-                new Teacher().dashboard();
+                if (Teacher.authenticate(username, password)) {
+                    new Teacher().dashboard();
+                } else {
+                    System.out.println("❌ Invalid Teacher credentials. Access denied.");
+                }
                 break;
             case "Student":
-                new Student().dashboard();
+                new Student().dashboard(); // Add authentication later
                 break;
         }
     }
