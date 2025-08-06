@@ -10,50 +10,27 @@ public class AttendanceManagementSystem {
         System.out.println("2. Teacher");
         System.out.println("3. Student");
         System.out.print("Enter your choice (1-3): ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
 
-        String role = "";
+        int choice = scanner.nextInt();
+        scanner.nextLine();  // consume newline
+
         switch (choice) {
             case 1:
-                role = "Admin";
+                Admin admin = new Admin(scanner);
+                admin.login();
                 break;
             case 2:
-                role = "Teacher";
+                Teacher teacher = new Teacher(scanner);
+                teacher.login();
                 break;
             case 3:
-                role = "Student";
+                Student student = new Student(scanner);  // Pass scanner here
+                student.login();  // Call login
                 break;
             default:
-                System.out.println("Invalid choice. Exiting...");
-                return;
+                System.out.println("Invalid choice.");
         }
 
-        System.out.println("\n--- " + role + " Login ---");
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-
-        System.out.println("\nLogin details:");
-        System.out.println("Role    : " + role);
-        System.out.println("Username: " + username);
-
-        switch (role) {
-            case "Admin":
-                new Admin().dashboard();
-                break;
-            case "Teacher":
-                if (Teacher.authenticate(username, password)) {
-                    new Teacher().dashboard();
-                } else {
-                    System.out.println("❌ Invalid Teacher credentials. Access denied.");
-                }
-                break;
-            case "Student":
-                new Student().dashboard(); // Add authentication later
-                break;
-        }
+        scanner.close();
     }
 }
