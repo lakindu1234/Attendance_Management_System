@@ -1,46 +1,57 @@
-
-// Source code is decompiled from a .class file using FernFlower decompiler.
 import java.util.Scanner;
 
 public class AttendanceManagementSystem {
-    public AttendanceManagementSystem() {
-    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] var0) {
-        Scanner var1 = new Scanner(System.in);
         System.out.println("===== Attendance Management System =====");
         System.out.println("Select your role:");
         System.out.println("1. Admin");
         System.out.println("2. Teacher");
         System.out.println("3. Student");
         System.out.print("Enter your choice (1-3): ");
-        int var2 = var1.nextInt();
-        var1.nextLine();
-        String var3 = "";
-        switch (var2) {
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        String role = "";
+        switch (choice) {
             case 1:
-                var3 = "Admin";
+                role = "Admin";
                 break;
             case 2:
-                var3 = "Teacher";
+                role = "Teacher";
                 break;
             case 3:
-                var3 = "Student";
+                role = "Student";
                 break;
             default:
                 System.out.println("Invalid choice. Exiting...");
                 return;
         }
 
-        System.out.println("\n--- " + var3 + " Login ---");
+        System.out.println("\n--- " + role + " Login ---");
         System.out.print("Enter username: ");
-        String var4 = var1.nextLine();
+        String username = scanner.nextLine();
         System.out.print("Enter password: ");
-        String var5 = var1.nextLine();
+        String password = scanner.nextLine();
+
         System.out.println("\nLogin details:");
-        System.out.println("Role    : " + var3);
-        System.out.println("Username: " + var4);
-        System.out.println("Password: " + var5);
-        System.out.println("\nRedirecting to " + var3 + " Dashboard...");
+        System.out.println("Role    : " + role);
+        System.out.println("Username: " + username);
+        System.out.println("Password: " + password);
+        System.out.println("\nRedirecting to " + role + " Dashboard...");
+
+        // Call role-specific dashboard
+        switch (role) {
+            case "Admin":
+                new Admin().dashboard();
+                break;
+            case "Teacher":
+                new Teacher().dashboard();
+                break;
+            case "Student":
+                new Student().dashboard();
+                break;
+        }
     }
 }
