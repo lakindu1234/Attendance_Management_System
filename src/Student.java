@@ -4,12 +4,12 @@ public class Student {
     public void dashboard() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n--- Student Dashboard ---");
-        System.out.println("1. View Attendance");
-        System.out.println("2. View Profile");
-        System.out.println("3. Logout");
-
         while (true) {
+            System.out.println("\n1. View Attendance");
+            System.out.println("2. View Profile");
+            System.out.println("3. Logout");
             System.out.print("Enter your choice: ");
+
             int choice = scanner.nextInt();
 
             switch (choice) {
