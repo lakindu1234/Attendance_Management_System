@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class Teacher {
     private Scanner scanner;
+    private String teacherName;
 
     public Teacher(Scanner scanner) {
         this.scanner = scanner;
@@ -28,7 +29,9 @@ public class Teacher {
                 continue;
             }
 
-            if (authenticate(username, password)) {
+            String name = authenticate(username, password);
+            if (name != null) {
+                this.teacherName = name;
                 dashboard();
                 break;
             } else {
@@ -37,7 +40,7 @@ public class Teacher {
         }
     }
 
-    public boolean authenticate(String username, String password) {
+    public String authenticate(String username, String password) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader("teachers.txt"));
             String line;
@@ -51,7 +54,7 @@ public class Teacher {
                     if (fileUsername.equals(username) && filePassword.equals(password)) {
                         System.out.println("✅ Welcome, " + fileName + "!");
                         reader.close();
-                        return true;
+                        return fileName;
                     }
                 }
             }
@@ -60,7 +63,7 @@ public class Teacher {
             System.out.println("❌ Error reading teacher data: " + e.getMessage());
         }
 
-        return false;
+        return null;
     }
 
     public void dashboard() {
@@ -68,13 +71,14 @@ public class Teacher {
             System.out.println("\n========================================");
             System.out.println("         TEACHER DASHBOARD");
             System.out.println("========================================");
-            System.out.println("1. Mark Attendance (coming soon)");
-            System.out.println("2. View Students");
-            System.out.println("3. Add Student");
-            System.out.println("4. Delete Student");
-            System.out.println("5. View Attendance Reports (coming soon)");
-            System.out.println("6. Back to Main Menu");
-            System.out.println("7. Exit Program");
+            System.out.println("1. Mark Daily Attendance");
+            System.out.println("2. View Today's Attendance");
+            System.out.println("3. View Students List");
+            System.out.println("4. Add Student");
+            System.out.println("5. Delete Student");
+            System.out.println("6. View Attendance Reports");
+            System.out.println("7. Back to Main Menu");
+            System.out.println("8. Exit Program");
             System.out.println("========================================");
             System.out.print("Enter your choice: ");
 
@@ -84,27 +88,28 @@ public class Teacher {
 
                 switch (choice) {
                     case 1:
-                        System.out.println("📝 Feature coming soon...");
-                        pressEnterToContinue();
+                        AttendanceManager.markAttendance(scanner, teacherName);
                         break;
                     case 2:
+                        AttendanceManager.viewTodayAttendance(scanner);
+                        break;
+                    case 3:
                         StudentManager.viewAllStudents();
                         pressEnterToContinue();
                         break;
-                    case 3:
+                    case 4:
                         StudentManager.addStudent(scanner);
                         break;
-                    case 4:
+                    case 5:
                         StudentManager.deleteStudent(scanner);
                         break;
-                    case 5:
-                        System.out.println("📊 Feature coming soon...");
-                        pressEnterToContinue();
-                        break;
                     case 6:
+                        AttendanceManager.viewAttendanceReports(scanner);
+                        break;
+                    case 7:
                         System.out.println("🔙 Returning to Main Menu...");
                         return;
-                    case 7:
+                    case 8:
                         System.out.println("Thank you for using Attendance Management System!");
                         System.out.println("Goodbye! 👋");
                         System.exit(0);

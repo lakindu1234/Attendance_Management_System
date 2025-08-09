@@ -1,4 +1,3 @@
-
 // File: AttendanceManagementSystem.java
 import java.util.Scanner;
 

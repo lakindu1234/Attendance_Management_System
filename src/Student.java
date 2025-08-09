@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class Student {
     private Scanner scanner;
+    private String studentName;
+    private String studentUsername;
 
     public Student(Scanner scanner) {
         this.scanner = scanner;
@@ -26,8 +28,11 @@ public class Student {
                 continue;
             }
 
-            if (authenticate(username, password)) {
-                dashboard(username);
+            String name = authenticate(username, password);
+            if (name != null) {
+                this.studentName = name;
+                this.studentUsername = username;
+                dashboard();
                 break;
             } else {
                 System.out.println("❌ Invalid student credentials! Try again or type 'back' to return.");
@@ -35,7 +40,7 @@ public class Student {
         }
     }
 
-    private boolean authenticate(String username, String password) {
+    private String authenticate(String username, String password) {
         try (BufferedReader reader = new BufferedReader(new FileReader("students.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -47,26 +52,27 @@ public class Student {
 
                     if (fileUsername.equals(username) && filePassword.equals(password)) {
                         System.out.println("✅ Welcome, " + fileName + "!");
-                        return true;
+                        return fileName;
                     }
                 }
             }
         } catch (IOException e) {
             System.out.println("❌ Error reading students.txt file: " + e.getMessage());
         }
-        return false;
+        return null;
     }
 
-    private void dashboard(String username) {
+    private void dashboard() {
         while (true) {
             System.out.println("\n========================================");
             System.out.println("         STUDENT DASHBOARD");
             System.out.println("========================================");
-            System.out.println("1. View My Attendance (coming soon)");
-            System.out.println("2. View My Profile");
-            System.out.println("3. View Class Schedule (coming soon)");
-            System.out.println("4. Back to Main Menu");
-            System.out.println("5. Exit Program");
+            System.out.println("1. View My Today's Attendance");
+            System.out.println("2. View My Attendance History");
+            System.out.println("3. View My Profile");
+            System.out.println("4. View My Attendance Summary");
+            System.out.println("5. Back to Main Menu");
+            System.out.println("6. Exit Program");
             System.out.println("========================================");
             System.out.print("Enter your choice: ");
 
@@ -76,20 +82,23 @@ public class Student {
 
                 switch (choice) {
                     case 1:
-                        System.out.println("📊 Feature coming soon...");
+                        AttendanceManager.viewMyTodayAttendance(studentUsername);
                         pressEnterToContinue();
                         break;
                     case 2:
-                        viewProfile(username);
+                        AttendanceManager.viewMyAttendanceHistory(scanner, studentUsername);
                         break;
                     case 3:
-                        System.out.println("📅 Feature coming soon...");
-                        pressEnterToContinue();
+                        viewProfile();
                         break;
                     case 4:
+                        AttendanceManager.viewMyAttendanceSummary(studentUsername);
+                        pressEnterToContinue();
+                        break;
+                    case 5:
                         System.out.println("🔙 Returning to Main Menu...");
                         return;
-                    case 5:
+                    case 6:
                         System.out.println("Thank you for using Attendance Management System!");
                         System.out.println("Goodbye! 👋");
                         System.exit(0);
@@ -106,13 +115,13 @@ public class Student {
         }
     }
 
-    private void viewProfile(String username) {
+    private void viewProfile() {
         System.out.println("\n--- My Profile ---");
         try (BufferedReader reader = new BufferedReader(new FileReader("students.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 3 && parts[1].equals(username)) {
+                if (parts.length == 3 && parts[1].equals(studentUsername)) {
                     System.out.println("👤 Profile Information:");
                     System.out.println("----------------------------------------");
                     System.out.println("Name: " + parts[0]);

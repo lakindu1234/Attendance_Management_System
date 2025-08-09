@@ -52,9 +52,10 @@ public class Admin {
             System.out.println("3. Delete Student");
             System.out.println("4. View All Teachers");
             System.out.println("5. View All Students");
-            System.out.println("6. View Attendance Report (coming soon)");
-            System.out.println("7. Back to Main Menu");
-            System.out.println("8. Exit Program");
+            System.out.println("6. View Daily Attendance Report");
+            System.out.println("7. View Monthly Attendance Summary");
+            System.out.println("8. Back to Main Menu");
+            System.out.println("9. Exit Program");
             System.out.println("========================================");
             System.out.print("Enter your choice: ");
 
@@ -77,15 +78,18 @@ public class Admin {
                         break;
                     case 5:
                         StudentManager.viewAllStudents();
-                        break;
-                    case 6:
-                        System.out.println("📊 Feature coming soon...");
                         pressEnterToContinue();
                         break;
+                    case 6:
+                        AttendanceManager.viewDailyAttendanceReport(scanner);
+                        break;
                     case 7:
+                        AttendanceManager.viewMonthlyAttendanceSummary(scanner);
+                        break;
+                    case 8:
                         System.out.println("🔙 Returning to Main Menu...");
                         return;
-                    case 8:
+                    case 9:
                         System.out.println("Thank you for using Attendance Management System!");
                         System.out.println("Goodbye! 👋");
                         System.exit(0);
