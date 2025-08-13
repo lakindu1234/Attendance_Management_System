@@ -6,12 +6,14 @@ public class AttendanceManagementSystem {
     public static void main(String[] args) {
         try {
             Class.forName("org.sqlite.JDBC");
-            DatabaseManager.initializeDatabase();
+            try {
+                DatabaseManager.initializeDatabase();
+            } catch (SQLException e) {
+                System.out.println("Database initialization error: " + e.getMessage());
+                System.exit(1);
+            }
         } catch (ClassNotFoundException e) {
             System.out.println("SQLite JDBC driver not found!");
-            System.exit(1);
-        } catch (SQLException e) {
-            System.out.println("Database error: " + e.getMessage());
             System.exit(1);
         }
 
