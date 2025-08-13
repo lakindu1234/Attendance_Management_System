@@ -2,38 +2,45 @@
 import java.sql.*;
 
 public class DatabaseManager {
-    private static final String DB_URL = "jdbc:sqlite:attendance.db";
+    private static final String DB_URL = "jdbc:sql极速赛车开奖直播网
+    We are generating the code. Let me complete the `DatabaseManager` class.
 
-    public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_URL);
-    }
+            ```java
+// File: DatabaseManager.java
+import java.sql.*;
 
-    public static void initializeDatabase() {
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement()) {
+    public class DatabaseManager {
+        private static final String DB_URL = "jdbc:sqlite:attendance.db";
 
-            // Create tables
-            stmt.execute("CREATE TABLE IF NOT EXISTS teachers (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "name TEXT NOT NULL," +
-                    "username TEXT UNIQUE NOT NULL," +
-                    "password TEXT NOT NULL)");
+        public static Connection getConnection() throws SQLException {
+            return DriverManager.getConnection(DB_URL);
+        }
 
-            stmt.execute("CREATE TABLE IF NOT EXISTS students (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "name TEXT NOT NULL," +
-                    "username TEXT UNIQUE NOT NULL," +
-                    "password TEXT NOT NULL)");
+        public static void initializeDatabase() throws SQLException {
+            try (Connection conn = getConnection();
+                 Statement stmt = conn.createStatement()) {
 
-            stmt.execute("CREATE TABLE IF NOT EXISTS attendance (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "date TEXT NOT NULL," +
-                    "student_username TEXT NOT NULL," +
-                    "status TEXT NOT NULL," +
-                    "teacher_name TEXT NOT NULL)");
+                // Create teachers table
+                stmt.execute("CREATE TABLE IF NOT EXISTS teachers (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "name TEXT NOT NULL," +
+                        "username TEXT UNIQUE NOT NULL," +
+                        "password TEXT NOT NULL)");
 
-        } catch (SQLException e) {
-            System.out.println("Error initializing database: " + e.getMessage());
+                // Create students table
+                stmt.execute("CREATE TABLE IF NOT EXISTS students (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "name TEXT NOT NULL," +
+                        "username TEXT UNIQUE NOT NULL," +
+                        "password TEXT NOT NULL)");
+
+                // Create attendance table
+                stmt.execute("CREATE TABLE IF NOT EXISTS attendance (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "date TEXT NOT NULL," +
+                        "student_username TEXT NOT NULL," +
+                        "status TEXT NOT NULL," +
+                        "teacher_name TEXT NOT NULL)");
+            }
         }
     }
-}
