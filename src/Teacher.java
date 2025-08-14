@@ -38,7 +38,6 @@ public class Teacher {
         }
     }
 
-    // Changed from public to private
     private String authenticate(String username, String password) {
         String sql = "SELECT name FROM teachers WHERE username = ? AND password = ?";
         try (Connection conn = DatabaseManager.getConnection();

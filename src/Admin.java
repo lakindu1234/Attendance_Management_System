@@ -48,14 +48,15 @@ public class Admin {
             System.out.println("         ADMIN DASHBOARD");
             System.out.println("========================================");
             System.out.println("1. Add Teacher");
-            System.out.println("2. Add Student");
-            System.out.println("3. Delete Student");
-            System.out.println("4. View All Teachers");
-            System.out.println("5. View All Students");
-            System.out.println("6. View Daily Attendance Report");
-            System.out.println("7. View Monthly Attendance Summary");
-            System.out.println("8. Back to Main Menu");
-            System.out.println("9. Exit Program");
+            System.out.println("2. Delete Teacher");
+            System.out.println("3. Add Student");
+            System.out.println("4. Delete Student");
+            System.out.println("5. View All Teachers");
+            System.out.println("6. View All Students");
+            System.out.println("7. View Daily Attendance Report");
+            System.out.println("8. View Monthly Attendance Summary");
+            System.out.println("9. Back to Main Menu");
+            System.out.println("10. Exit Program");
             System.out.println("========================================");
             System.out.print("Enter your choice: ");
 
@@ -68,28 +69,31 @@ public class Admin {
                         addTeacher();
                         break;
                     case 2:
-                        StudentManager.addStudent(scanner);
+                        deleteTeacher();
                         break;
                     case 3:
-                        StudentManager.deleteStudent(scanner);
+                        StudentManager.addStudent(scanner);
                         break;
                     case 4:
-                        viewAllTeachers();
+                        StudentManager.deleteStudent(scanner);
                         break;
                     case 5:
+                        viewAllTeachers();
+                        break;
+                    case 6:
                         StudentManager.viewAllStudents();
                         pressEnterToContinue();
                         break;
-                    case 6:
+                    case 7:
                         AttendanceManager.viewDailyAttendanceReport(scanner);
                         break;
-                    case 7:
+                    case 8:
                         AttendanceManager.viewMonthlyAttendanceSummary(scanner);
                         break;
-                    case 8:
+                    case 9:
                         System.out.println("🔙 Returning to Main Menu...");
                         return;
-                    case 9:
+                    case 10:
                         System.out.println("Thank you for using Attendance Management System!");
                         System.out.println("Goodbye! 👋");
                         System.exit(0);
@@ -134,6 +138,11 @@ public class Admin {
                     continue;
                 }
 
+                if (isTeacherUsernameExists(username)) {
+                    System.out.println("❌ Username already exists! Please choose a different username.");
+                    continue;
+                }
+
                 System.out.print("Enter Password (or 'back' to return): ");
                 String password = scanner.nextLine().trim();
 
@@ -171,6 +180,113 @@ public class Admin {
         }
     }
 
+    private void deleteTeacher() {
+        while (true) {
+            System.out.println("\n--- Delete Teacher ---");
+
+            // First, show all teachers
+            System.out.println("Current Teachers:");
+            viewAllTeachersForDeletion();
+
+            System.out.print("\nEnter the username of the teacher to delete (or 'back' to return): ");
+            String targetUsername = scanner.nextLine().trim();
+
+            if (targetUsername.equalsIgnoreCase("back")) {
+                return;
+            }
+
+            if (targetUsername.isEmpty()) {
+                System.out.println("❌ Username cannot be empty!");
+                continue;
+            }
+
+            // Check if teacher exists and show confirmation
+            if (confirmTeacherDeletion(targetUsername)) {
+                try {
+                    String sql = "DELETE FROM teachers WHERE username = ?";
+                    try (Connection conn = DatabaseManager.getConnection();
+                         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setString(1, targetUsername);
+                        int rowsAffected = pstmt.executeUpdate();
+
+                        if (rowsAffected > 0) {
+                            System.out.println("✅ Teacher deleted successfully.");
+                        } else {
+                            System.out.println("⚠️ Teacher not found.");
+                        }
+                    }
+                } catch (SQLException e) {
+                    System.out.println("❌ Error deleting teacher: " + e.getMessage());
+                }
+            } else {
+                System.out.println("❌ Teacher deletion cancelled or teacher not found.");
+            }
+
+            System.out.print("Do you want to delete another teacher? (y/n): ");
+            String choice = scanner.nextLine().trim();
+            if (!choice.equalsIgnoreCase("y")) {
+                break;
+            }
+        }
+    }
+
+    private void viewAllTeachersForDeletion() {
+        String sql = "SELECT name, username FROM teachers";
+        try (Connection conn = DatabaseManager.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            int count = 0;
+            System.out.println("📋 Teachers List:");
+            System.out.println("----------------------------------------");
+            while (rs.next()) {
+                count++;
+                System.out.println(count + ". Name: " + rs.getString("name") +
+                        " | Username: " + rs.getString("username"));
+            }
+            if (count == 0) {
+                System.out.println("No teachers found.");
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Error reading teachers: " + e.getMessage());
+        }
+    }
+
+    private boolean confirmTeacherDeletion(String username) {
+        String sql = "SELECT name FROM teachers WHERE username = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                String name = rs.getString("name");
+                System.out.println("\nTeacher found: " + name + " (" + username + ")");
+                System.out.print("Are you sure you want to delete this teacher? (y/n): ");
+                String confirmation = scanner.nextLine().trim();
+                return confirmation.equalsIgnoreCase("y");
+            } else {
+                System.out.println("❌ Teacher with username '" + username + "' not found.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("❌ Error checking teacher: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean isTeacherUsernameExists(String username) {
+        String sql = "SELECT COUNT(*) AS count FROM teachers WHERE username = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next() && rs.getInt("count") > 0;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
     private void viewAllTeachers() {
         System.out.println("\n--- All Teachers ---");
         String sql = "SELECT name, username FROM teachers";
@@ -188,6 +304,9 @@ public class Admin {
             }
             if (count == 0) {
                 System.out.println("No teachers found.");
+            } else {
+                System.out.println("----------------------------------------");
+                System.out.println("Total Teachers: " + count);
             }
         } catch (SQLException e) {
             System.out.println("❌ Error reading teachers: " + e.getMessage());
